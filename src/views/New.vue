@@ -10,32 +10,39 @@
           <button class='plus-button' @click='appendOption'>+</button>
         </div>
         <ol>
-          <li v-for='(option, index) in poll.options' :key='option.id'>Option: {{option.name}} <span @click='deleteOption(index)' id='trash-option'><i class="fas fa-trash-alt"></i></span></li> 
+          <li v-for='(option, index) in poll.options' :key='option.id'>Option: {{option.name}} <span @click='deleteOption(index)' id='trash-option'><i class="fas fa-trash-alt"></i></span></li>
         </ol>
       </div>
     </div>
     <div>
       <h1 id='chart-title' style='text-align: center; font-family: "Saira";'>Pick a chart</h1>
       <div id='graph-area'>
-        <div v-for='graph in graphs' :key='graph.id' class='graph-container'>
+        <div v-for='graph in graphs' @click='selectGraph(graph)' :key='graph.id' class='graph-container' :class="{graphActive: graphActive}">
           <i class="fas" :class='`fa-${graph.image}`'></i>
         </div>
       </div>
       <button class='std-button' @click='createPoll'>Finish</button>
+      <div id='summary'>
+        Test
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase'
+
 export default {
   data() {
     return {
+      graphActive: false,
       graphs: [
         {id: 1, image: 'chart-pie'},
         {id: 2, image: 'chart-bar'},
         {id: 3, image: 'signal'}
       ],
       poll: {
+        graphID: null,
         question: '',
         options: []
       },
@@ -43,6 +50,10 @@ export default {
     }
   },
   methods: {
+    selectGraph(graph) {
+      this.graphActive = !this.graphActive
+      this.poll.graphID = graph.id
+    },  
     appendOption() {
       if(this.option == '') {
         return
@@ -51,13 +62,18 @@ export default {
       } else {
         this.poll.options.push({
         id: this.poll.options.length + 1,
-        name: this.option
+        name: this.option,
+        votes: 0
       })
         this.option = ''
       }
     },
     createPoll() {
-      console.log(this.poll)
+      // generate slug //
+      firebase.database().ref('polls').push(this.poll)
+      .then((response) => {
+        console.log(response)
+      })
     },
     deleteOption(index) {
       this.poll.options.splice(index, 1)
@@ -67,6 +83,7 @@ export default {
 </script>
 
 <style scoped>
+  
   #trash-option {
     position: relative;
     bottom: 3px;
@@ -92,6 +109,10 @@ export default {
 
   .graph-container:hover {
     cursor: pointer;
+    border: 3px solid white;
+  }
+  .graphActive {
+    color: white;
     border: 3px solid white;
   }
 

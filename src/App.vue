@@ -1,6 +1,6 @@
 <template>
 <div id='app'>
-  <transition name="fade">
+  <transition name="page" mode="out-in">
     <router-view></router-view>
   </transition>
       <div id='footer'>
@@ -58,10 +58,10 @@ export default {
 .std-button:focus {
   outline: none;
 }
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.page-enter-active, .page-leave-active {
+  transition: opacity .5s, transform .5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.page-enter, .page-leave-to {
   opacity: 0;
 }
 

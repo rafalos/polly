@@ -26,6 +26,7 @@ export default {
     overflow-x: hidden;
   }
   a {
+    color: black;
     text-decoration: none;
   }
   .std-button {
@@ -34,7 +35,6 @@ export default {
     height: 56px;
     background: rgb(255, 255, 255);
     border: none;
-    font-family: 'Roboto';
     font-size: 1.2em;
     font-style: normal;
     font-weight: bold;

@@ -7,7 +7,7 @@
         <h2>Options</h2>
         <input @keydown.enter='appendOption' v-model='option' type='text' placeholder='Insert your option here'>
         <div>
-          <button class='plus-button' @click='appendOption'>+</button>
+          <button class='plus-button' @click='appendOption'><span v-if='poll.options.length==6'>Limit reached</span><span v-else>+</span></button>
         </div>
         <ol>
           <li v-for='(option, index) in poll.options' :key='option.id'>Option: {{option.name}} <span @click='deleteOption(index)' id='trash-option'><i class="fas fa-trash-alt"></i></span></li>
@@ -22,19 +22,33 @@
         </div>
       </div>
       <button class='std-button' @click='createPoll'>Finish</button>
-      <div id='summary'>
-        Test
+      <div id='summary' v-if='createdPoll'>
+        <h2>Your poll is ready. Share it with your friends </h2>
+        <div>
+          <input type='text' style='text-align: center;' :value='pollUrl'>
+        </div>
+        <div id='summary-icons'>
+          <i class="fab fa-facebook" style='color: #3b5998'></i>
+          <i class="fab fa-twitter-square" style='color: #0084b4'></i>
+          <router-link :to="{ path: 'poll/'+ createdPoll.slug}"><i style='color: green;' class="fas fa-check-square"></i></router-link>
+        </div>
+      </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
 import firebase from 'firebase'
 
 export default {
+  computed: {
+    pollUrl() {
+      return `http://192.168.1.122:8080/poll/${this.createdPoll.slug}`
+    }
+  },
   data() {
     return {
+      createdPoll: null,
       graphActive: false,
       graphs: [
         {id: 1, image: 'chart-pie'},
@@ -42,6 +56,7 @@ export default {
         {id: 3, image: 'signal'}
       ],
       poll: {
+        slug: '',
         graphID: null,
         question: '',
         options: []
@@ -50,6 +65,16 @@ export default {
     }
   },
   methods: {
+    copyUrl() {
+    },  
+    generateSlug() {
+      let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let slug = ''
+      for(let i=0; i<6; i++) {
+        slug += possible.charAt(Math.floor(Math.random()*possible.length))
+      }
+      return slug
+    },
     selectGraph(graph) {
       this.graphActive = !this.graphActive
       this.poll.graphID = graph.id
@@ -69,10 +94,16 @@ export default {
       }
     },
     createPoll() {
-      // generate slug //
+      let vm = this;
+      this.poll.slug = this.generateSlug()
       firebase.database().ref('polls').push(this.poll)
       .then((response) => {
-        console.log(response)
+        let key = response.key
+        firebase.database().ref('polls').child(response.key)
+        .once('value')
+        .then((snapshot) => {
+          vm.createdPoll = snapshot.val()
+        })
       })
     },
     deleteOption(index) {
@@ -83,7 +114,20 @@ export default {
 </script>
 
 <style scoped>
-  
+  #summary .fas, .fab {
+    cursor: pointer;
+    font-size: 2.2em;
+    margin-right: 5px;
+  }
+  #summary-icons {
+    padding: 10px;
+  }
+  #summary {
+    background: white;
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+  }
   #trash-option {
     position: relative;
     bottom: 3px;
@@ -151,6 +195,7 @@ export default {
 
   }
   input {
+    -webkit-appearance: none; border-radius: 0;
     width: 80%;
     border: none;
     border-bottom: 2px solid black;

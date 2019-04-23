@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import New from './views/New.vue'
+import Poll from './views/Poll.vue'
 
 Vue.use(Router)
 
@@ -16,6 +17,10 @@ export default new Router({
       {
         path: '/new',
         component: New
+      },
+      {
+        path: '/poll/:slug',
+        component: Poll
       }
   ]
 })

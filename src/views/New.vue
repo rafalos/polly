@@ -15,13 +15,10 @@
       </div>
     </div>
     <div>
-      <h1 id='chart-title' style='text-align: center; font-family: "Saira";'>Pick a chart</h1>
       <div id='graph-area'>
-        <div v-for='graph in graphs' @click='selectGraph(graph)' :key='graph.id' class='graph-container' :class="{graphActive: graphActive}">
-          <i class="fas" :class='`fa-${graph.image}`'></i>
-        </div>
+        <chart-select></chart-select>
       </div>
-      <button class='std-button' @click='createPoll'>Finish</button>
+      <button class='std-button' @click='createPoll' v-if='!createdPoll'>Finish</button>
       <div id='summary' v-if='createdPoll'>
         <h2>Your poll is ready. Share it with your friends </h2>
         <div>
@@ -39,6 +36,7 @@
 
 <script>
 import firebase from 'firebase'
+import ChartSelect from '../components/ChartSelect'
 
 export default {
   computed: {
@@ -49,12 +47,6 @@ export default {
   data() {
     return {
       createdPoll: null,
-      graphActive: false,
-      graphs: [
-        {id: 1, image: 'chart-pie'},
-        {id: 2, image: 'chart-bar'},
-        {id: 3, image: 'signal'}
-      ],
       poll: {
         slug: '',
         graphID: null,
@@ -65,8 +57,6 @@ export default {
     }
   },
   methods: {
-    copyUrl() {
-    },  
     generateSlug() {
       let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let slug = ''
@@ -74,11 +64,7 @@ export default {
         slug += possible.charAt(Math.floor(Math.random()*possible.length))
       }
       return slug
-    },
-    selectGraph(graph) {
-      this.graphActive = !this.graphActive
-      this.poll.graphID = graph.id
-    },  
+    }, 
     appendOption() {
       if(this.option == '') {
         return
@@ -109,6 +95,9 @@ export default {
     deleteOption(index) {
       this.poll.options.splice(index, 1)
     }
+  },
+  components: {
+    ChartSelect
   }
 }
 </script>
@@ -144,21 +133,6 @@ export default {
   ol {
     text-align: left;
   }
-  .graph-container {
-    font-size: 5em;
-    text-align: center;
-    border: 3px solid black;
-    border-radius: 10px;
-  }
-
-  .graph-container:hover {
-    cursor: pointer;
-    border: 3px solid white;
-  }
-  .graphActive {
-    color: white;
-    border: 3px solid white;
-  }
 
   #container {
     display: grid;
@@ -170,14 +144,6 @@ export default {
     text-align: center;
     background: white;
     font-family: 'Saira';
-  }
-
-  #graph-area {
-    padding: 30px;
-    display: grid;
-    grid-column-gap: 5%;
-    grid-row-gap: 5%;
-    grid-template-columns: 1fr 1fr 1fr;
   }
 
   @media all and (max-width: 680px) {

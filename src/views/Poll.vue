@@ -1,18 +1,34 @@
 <template>
-  <div id='container'>
-    <h1>{{poll.question}}</h1>
-    <div v-if='poll'>
-     <apexchart width="700px" type="bar" :options="chartOptions" :series="series"></apexchart>
+  <div id='container' v-if='poll'>
+    <div id='result' v-if='voted'>
+      <div id='result-header'>
+        <h1 style='text-align: center; font-family: "Saira";'>{{poll.question}}</h1>
+        <button class='std-button' @click='voted=false'>Vote</button>
+      </div>
+      <div id='chart-container'>
+        <apexchart width='80%' height='300px' type="bar" :options="chartOptions" :series="series"></apexchart>  
+      </div>
+      <div id='chart-selection-container'>
+        <char-select></char-select>
+      </div>
+    </div>
+    <div if='voting' v-else id='voting'>
+      <h1 style='text-align: center; font-family: "Saira";'>{{poll.question}}</h1>
+        <label class='option' v-for='option in poll.options' :key='option.id'><input type='radio' :name='option'>{{option.name}}</label>
+        <button class='std-button' @click='voted=true'>Check results</button>
+        <button class='std-button'>Vote</button>
     </div>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase'
+import CharSelect from '../components/ChartSelect'
 
 export default {
   data() {
     return {
+      voted: false,
       chartOptions: {
         plotOptions: {
             bar: {
@@ -56,6 +72,29 @@ export default {
       vm.series[0] = series
     });
   });
+  },
+  components: {
+    CharSelect
   }
 }
 </script>
+
+<style>
+#result-header {
+  grid-column: 1/-1
+}
+  #result {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 200px 1fr;
+  }
+  .option {
+    display: inline-block;
+    margin: 10px;
+  }
+  #container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 100px 1fr;
+  }
+</style>

@@ -55,7 +55,7 @@ export default {
     cursor: pointer;
   }
 
-.std-button:focus {
+button {
   outline: none;
 }
 .page-enter-active, .page-leave-active {

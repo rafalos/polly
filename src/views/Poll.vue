@@ -3,13 +3,17 @@
     <div id='result' v-if='voted'>
       <div id='result-header'>
         <h1 style='text-align: center; font-family: "Saira";'>{{poll.question}}</h1>
-        <button class='std-button' @click='voted=false'>Vote</button>
       </div>
       <div id='chart-container'>
-        <apexchart width='80%' height='300px' type="bar" :options="chartOptions" :series="series"></apexchart>  
+        <Bar v-if='mode===1'></Bar>  
+        <Heatmap v-if='mode===2'></Heatmap>
+        <Radial v-if='mode===3'></Radial>   
       </div>
       <div id='chart-selection-container'>
-        <char-select></char-select>
+        <char-select @graphSelected="changeGraph"></char-select>
+        <div @click='voted=false' style='text-align: center; font-size: 1.4em; cursor: pointer;'>
+          <span><i class="fas fa-long-arrow-alt-left"></i> Back to voting</span>
+        </div>
       </div>
     </div>
     <div if='voting' v-else id='voting'>
@@ -24,32 +28,22 @@
 <script>
 import firebase from 'firebase'
 import CharSelect from '../components/ChartSelect'
+import Bar from '../components/charts/Bar'
+import Heatmap from '../components/charts/Heatmap'
+import Radial from '../components/charts/Radial'
+
 
 export default {
   data() {
     return {
+      mode : 1,
       voted: false,
-      chartOptions: {
-        plotOptions: {
-            bar: {
-              horizontal: true,
-              barHeight: '60%',
-            },
-          },
-          chart: {
-            id: 'vuechart-example'
-          },
-          xaxis: {
-            labels: {
-              show: false
-            },
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-          }
-        },
-        series: [{
-          data: [30, 40, 35, 50, 49, 60, 70, 91]
-        }],
       poll: null
+    }
+  },
+  methods: {
+    changeGraph(graph) {
+      this.mode = graph.id
     }
   },
   created() {
@@ -74,19 +68,25 @@ export default {
   });
   },
   components: {
-    CharSelect
+    CharSelect,
+    Bar,
+    Heatmap,
+    Radial
   }
 }
 </script>
 
 <style>
-#result-header {
-  grid-column: 1/-1
-}
+  #chart-container {
+    width: 100%;
+  }
+  #result-header {
+    grid-column: 1/-1
+  }
   #result {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 200px 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 100px 1fr 1fr;
   }
   .option {
     display: inline-block;
@@ -95,6 +95,6 @@ export default {
   #container {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 100px 1fr;
+    grid-template-rows: 100px 1fr 1fr;
   }
 </style>

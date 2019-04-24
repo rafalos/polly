@@ -1,9 +1,10 @@
 <template>
   <div>
-  <h1 id='chart-title' style='text-align: center; font-family: "Saira";'>Pick a chart</h1>
+  <h1 id='chart-title' style='text-align: center; font-family: "Saira";'>Switch chart mode</h1>
     <div id='graph-container'>
       <div v-for='graph in graphs' @click='selectGraph(graph)' :key='graph.id' class='graph-container' :class="{graphActive: graphActive}">
         <i class="fas" :class='`fa-${graph.image}`'></i>
+        <div style='font-size: .3em;'>{{graph.name}}</div>
       </div>
     </div>
   </div>
@@ -15,16 +16,15 @@ export default {
     return {
       graphActive: false,
       graphs: [
-        {id: 1, image: 'chart-pie'},
-        {id: 2, image: 'chart-bar'},
-        {id: 3, image: 'signal'}
+        {id: 1, image: 'bars', name: 'Bar'},
+        {id: 2, image: 'grip-horizontal', name: 'Heatmap'},
+        {id: 3, image: 'chart-pie', name: 'Radial'}
         ],
       }
   },
   methods: {
     selectGraph(graph) {
-      this.graphActive = !this.graphActive
-      this.poll.graphID = graph.id
+      this.$emit('graphSelected', graph)
     }
   }
 }
@@ -42,13 +42,13 @@ export default {
 .graph-container {
     font-size: 5em;
     text-align: center;
-    border: 3px solid black;
     border-radius: 10px;
+    transition: 0.3s;
   }
 
   .graph-container:hover {
+    color: white;
     cursor: pointer;
-    border: 3px solid white;
   }
   .graphActive {
     color: white;

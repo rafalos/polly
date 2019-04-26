@@ -9,18 +9,17 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-      {
-        path: '/',
-        component: Home
-      },
-      {
-        path: '/new',
-        component: New
-      },
-      {
-        path: '/poll/:slug',
-        component: Poll
-      }
+  routes: [{
+      path: '/',
+      component: Home
+    },
+    {
+      path: '/new',
+      component: New
+    },
+    {
+      path: '/poll/:slug',
+      component: Poll
+    }
   ]
 })

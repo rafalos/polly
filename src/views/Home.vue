@@ -18,14 +18,14 @@
 </template>
 
 <style scoped>
-  #header {
-    padding: 10px;
-  }
-  #slogan-area {
-    font-family: 'Saira';
-    font-size: 0.7em;
-    position: relative;
-  }
+#header {
+  padding: 10px;
+}
+#slogan-area {
+  font-family: "Saira";
+  font-size: 0.7em;
+  position: relative;
+}
 
 @media all and (max-width: 480px) {
   .slogan-area-text {
@@ -37,7 +37,7 @@
   }
   #container {
     display: grid;
-    grid-template-columns:1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: 70px 1fr 1fr;
   }
 }
@@ -48,7 +48,7 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 100px 1fr;
   }
-   #header {
+  #header {
     grid-column: 1/-1;
     padding: 30px;
   }
@@ -59,7 +59,7 @@
   }
   .slogan-area-text-container {
     font-size: 1.4em;
-    transform:skewX(-4deg);
+    transform: skewX(-4deg);
     background: white;
     width: 70%;
     height: 40%;
@@ -74,7 +74,7 @@
   .slogan-area-text {
     margin-top: 70px;
   }
-} 
+}
 
 @media all and (max-width: 680px) {
   .slogan-area-text-container {
